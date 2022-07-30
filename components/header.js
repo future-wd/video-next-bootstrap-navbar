@@ -6,38 +6,21 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-const menuLinks = [
-  {
-    title: 'Home',
-    path: '/',
-  },
-  {
-    title: 'About',
-    path: '/about',
-  },
-  {
-    title: 'Dropdown Menu',
-    id: '1',
-    subMenu: [
-      {
-        title: 'Home',
-        path: '/',
-      },
-      {
-        divider: true
-      },
-      {
-        title: 'About',
-        path: '/about',
-      },
-    ],
-  },
-]
+import {mainMenu as menuLinks, site} from '../config'
+
 
 const MenuItem = ({ title, path, subMenu, id }) => {
+  const router = useRouter()
+
   if (subMenu) {
+    const activeChild = subMenu.find((item) => {
+      if (router.pathname === item.path) {
+        return true
+      }
+      return false
+    })
     return (
-      <NavDropdown title={title} id={`nav-dropdown-${id}`}>
+      <NavDropdown title={title} id={`nav-dropdown-${id}`} active={activeChild}>
         {subMenu.map((item, index) => (
           <DropdownItem {...item} key={index} />
         ))}
@@ -47,7 +30,7 @@ const MenuItem = ({ title, path, subMenu, id }) => {
 
   return (
     <Link href={path} passHref>
-      <Nav.Link>{title}</Nav.Link>
+      <Nav.Link active={router.pathname === path}>{title}</Nav.Link>
     </Link>
   )
 }
@@ -72,7 +55,7 @@ const Header = () => {
   return (
     <Navbar bg="light" expand="lg">
       <Container fluid>
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+        <Navbar.Brand href="#home">{site.title}</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
